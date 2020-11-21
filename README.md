@@ -51,6 +51,7 @@ def loop_sample_define():
     while loop_define(1):
         hello("loop")
 ```
+
 関数`loop_sample_define`は無限に`hello loop!!`を出力する。whileの条件判定を関数に置き換えてそれをmockにすることでループを止める事ができる。
 
 
@@ -73,8 +74,9 @@ def test_loop_define(mocker):
     ]
 ```
 
-`loop_sample_define`の中で使われている`loop_define`をmock化する。引数`side_effect`を設定する事により3回目のwhileでfalseとなり処理が止まる。なので3回目の`hello`は呼ばれない。  
+関数`loop_sample_define`の中で使われている`loop_define`をmock化する。引数`side_effect`を設定する事により3回目のwhileでfalseとなり処理が止まる。なので3回目の`hello`は呼ばれない。  
 また、`side_effect`による引数はあくまでmockが書き換えているだけである。表面上`loop_define`は引数1で呼んでいるので`mock_calls`には表面上の引数が記録される。
+
 ---
 
 ### クラスインスタンスのtest
