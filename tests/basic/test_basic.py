@@ -1,5 +1,5 @@
 import pytest
-import src.pytest_spec.basic as basic
+import pytest_spec.basic as basic
 
 
 class TestErrors:

@@ -1,3 +1,7 @@
+import sched
+import time
+
+
 class MyError(Exception):
     """自作のエラークラス"""
 
@@ -36,3 +40,9 @@ class LoopSample(object):
     def loop_sample_define():
         while loop_define(1):
             hello("loop")
+
+
+def inner_instance_sample():
+    s = sched.scheduler(time.time, time.sleep)
+    s.enter(60, 1, hello)
+    s.run()

@@ -1,4 +1,4 @@
-import src.pytest_spec.basic as basic
+import pytest_spec.basic as basic
 from pytest_mock import mocker
 
 
