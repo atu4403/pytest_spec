@@ -1,6 +1,13 @@
 import pytest
 from typing import List, Union, Optional
-from pydantic import BaseModel, validator, validate_arguments, ValidationError, constr
+from pydantic import (
+    BaseModel,
+    validator,
+    validate_arguments,
+    ValidationError,
+    constr,
+    conlist,
+)
 
 
 class Times(BaseModel):
@@ -79,3 +86,32 @@ def test04():
     with pytest.raises(ValidationError) as e:
         reg_str("0:0:1")  # 正規表現にマッチしないのでエラー
     assert "string does not match regex" in str(e)
+
+
+@validate_arguments
+def str_or_float(
+    s: Union[
+        constr(strip_whitespace=True, regex=r"^\d{2}:\d{2}:\d{2}$"),
+        conlist(item_type=float, min_items=2, max_items=2),
+    ]
+):
+    return s
+
+
+def test05():
+    """2種類の引数を取る
+    1. str型なら正規表現がマッチしないとエラー
+    2. list型なら内容がfloatでなければエラー
+    """
+    assert str_or_float("00:00:01") == "00:00:01"
+    assert str_or_float("  00:00:01 ") == "00:00:01"  # strip_whitespaceによりトリムする
+    assert str_or_float([2, 2.6]) == [2.0, 2.6]
+    with pytest.raises(ValidationError) as e:
+        str_or_float("0:0:1")  # 正規表現にマッチしないのでエラー
+    with pytest.raises(ValidationError) as e:
+        str_or_float([1])  # listの長さが2じゃないのでエラー
+    with pytest.raises(ValidationError) as e:
+        str_or_float([1, 2, 3])  # listの長さが2じゃないのでエラー
+    with pytest.raises(ValidationError) as e:
+        str_or_float(["abc", "def"])  # listの内容がfloatでないのでエラー
+    assert str_or_float([1, 2]) == [1, 2]
